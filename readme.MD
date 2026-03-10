@@ -33,26 +33,24 @@ The system tracks a student's ability level and selects the next question based 
 
 ## Database Design
 
-Two MongoDB collections are used:
+Two MongoDB collections are used.
 
 ### Questions Collection
 Stores GRE-style questions.
 
 Fields:
-
 - question
 - options
 - correct_answer
 - difficulty (0.1 – 1.0)
 - topic
 
-### User Session Collection
+### UserSession Collection
 Tracks the student's progress.
 
 Fields:
-
 - user_id
-- ability score
+- ability
 
 ---
 
@@ -62,53 +60,63 @@ The system begins with a baseline ability score of **0.5**.
 
 After each response:
 
-- If the answer is **correct**  
-  ability = ability + 0.1
+If the answer is **correct**
 
-- If the answer is **incorrect**  
-  ability = ability - 0.1
+ability = ability + 0.1
 
-The next question is selected from the database with a difficulty closest to the updated ability score.
+If the answer is **incorrect**
 
-This allows the test to dynamically adjust difficulty based on user performance.
+ability = ability - 0.1
+
+The next question is selected from MongoDB based on the difficulty closest to the updated ability score.
+
+This allows the system to dynamically adjust question difficulty based on user performance.
 
 ---
 
 ## API Endpoints
 
 ### Start Test
+POST /start-test
 
-
-Creates a new user session.
+Creates a new user session with baseline ability score.
 
 ---
 
 ### Get Next Question
+GET /next-question
 
 Returns the next question based on the user's ability score.
 
 ---
 
 ### Submit Answer
+POST /submit-answer
 
-Evaluates the user's answer and updates ability score.
+Evaluates the user's answer and updates the ability score.
 
----POST /submit-answer
+---
 
 ### Study Plan
+GET /study-plan
 
-Generates a personalized study recommendation based on ability level.
+Generates a personalized study recommendation based on the user's ability level.
 
 ---
 
 ## Running the Project
 
-Install dependencies:
+Install dependencies
+
 pip install -r requirements.txt
 
-# Run the backend server:
+Run the backend server
+
 uvicorn app:app --reload
 
+Open API documentation
+
+http://127.0.0.1:8000/docs
 
 ---
 
